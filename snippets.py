@@ -10,7 +10,6 @@ logging.debug("Database Connection Established")
 
 def put(name, snippet):
     """Store a snippet with an associated name."""
-    logging.error("FIXME: Unimplemented - put({!r}, {!r})".format(name, snippet))
     cursor = connection.cursor()
     command = "insert into snippets values (%s, %s)"
     cursor.execute(command, (name, snippet))
@@ -19,14 +18,24 @@ def put(name, snippet):
 
     return name, snippet
 
+
 def get(name):
     """Retrieve the snippet with a given name.
-
     If there is no such snippet, return '404: Snippet Not Found'
     Returns the snippet
     """
+    # debugging log
     logging.error("FIXME: Unimplemented - get({!r})".format(name))
-    return ""
+    # connects to db
+    cursor = connection.cursor()
+    # selects a whole line from snippets db where keyword = name (name is whats passed in)
+    cursor.execute("select * from snippets where keyword='{}'".format(name))
+    # queries the db, inserts name into command
+    snippet = cursor.fetchone()[1]
+    connection.commit()
+    logging.debug("Snippet retrieved successfully")
+    # something is off here, on the return;  it doesn't know what snippets is
+    return snippet
 
 
 def main():
