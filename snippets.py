@@ -23,9 +23,9 @@ def get(name):
     """Retrieve the snippet with a given the name."""
 
     cursor = connection.cursor()
-    cursor.execute("select * from snippets where keyword='{}'".format(name))
+    cursor.execute("select * from snippets where keyword=%s", (name,))
 
-    snippet = cursor.fetchone()[0]
+    snippet = cursor.fetchone()[1]
     connection.commit()
     logging.debug("Snippet retrieved successfully")
 
