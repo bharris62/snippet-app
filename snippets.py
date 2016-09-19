@@ -25,11 +25,13 @@ def get(name):
     cursor = connection.cursor()
     cursor.execute("select * from snippets where keyword=%s", (name,))
 
-    snippet = cursor.fetchone()[1]
+    snippet = cursor.fetchone()
     connection.commit()
     logging.debug("Snippet retrieved successfully")
 
-    return snippet
+    if not snippet:
+        return "404: Snippet Not Found"
+    return snippet[1]
 
 
 def main():
