@@ -15,6 +15,7 @@ def put(name, snippet):
         command = "insert into snippets values (%s, %s)"
         cursor.execute(command, (name, snippet))
     except psycopg2.IntegrityError as e:
+        # sets db back and updates the keyword
         connection.rollback()
         command = "Update snippets set message=%s where keyword=%s"
         cursor.execute(command, (snippet, name))
@@ -27,16 +28,15 @@ def put(name, snippet):
 def get(name):
     """Retrieve the snippet with a given the name."""
 
-    cursor = connection.cursor()
-    cursor.execute("select * from snippets where keyword=%s", (name,))
+    with connection, connection.cursor() as cursor:
+        cursor.execute("select message from snippets where keyword=%s", (name,))
+        snippet = cursor.fetchone()
 
-    snippet = cursor.fetchone()
-    connection.commit()
     logging.debug("Snippet retrieved successfully")
 
     if not snippet:
         return "404: Snippet Not Found"
-    return snippet[1]
+    return snippet[0]
 
 
 def main():
