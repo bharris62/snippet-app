@@ -10,16 +10,16 @@ logging.debug("Database Connection Established")
 
 def put(name, snippet):
     """Store a snippet with an associated name."""
-    cursor = connection.cursor()
     try:
-        command = "insert into snippets values (%s, %s)"
-        cursor.execute(command, (name, snippet))
+        with connection, connection.cursor() as cursor:
+            command = "insert into snippets values (%s, %s)"
+            cursor.execute(command, (name, snippet))
     except psycopg2.IntegrityError as e:
-        # sets db back and updates the keyword
-        connection.rollback()
-        command = "Update snippets set message=%s where keyword=%s"
-        cursor.execute(command, (snippet, name))
-    connection.commit()
+
+        with connection, connection.cursor() as cursor:
+            command = "Update snippets set message=%s where keyword=%s"
+            cursor.execute(command, (snippet, name))
+
     logging.debug("Snippet stored successfully")
 
     return name, snippet
