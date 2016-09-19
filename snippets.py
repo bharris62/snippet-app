@@ -20,21 +20,15 @@ def put(name, snippet):
 
 
 def get(name):
-    """Retrieve the snippet with a given name.
-    If there is no such snippet, return '404: Snippet Not Found'
-    Returns the snippet
-    """
-    # debugging log
-    logging.error("FIXME: Unimplemented - get({!r})".format(name))
-    # connects to db
+    """Retrieve the snippet with a given the name."""
+
     cursor = connection.cursor()
-    # selects a whole line from snippets db where keyword = name (name is whats passed in)
     cursor.execute("select * from snippets where keyword='{}'".format(name))
-    # queries the db, inserts name into command
-    snippet = cursor.fetchone()[1]
+
+    snippet = cursor.fetchone()[0]
     connection.commit()
     logging.debug("Snippet retrieved successfully")
-    # something is off here, on the return;  it doesn't know what snippets is
+
     return snippet
 
 
