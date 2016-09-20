@@ -45,7 +45,12 @@ def catalog():
         cursor.execute("select keyword from snippets ")
         keyword = cursor.fetchall()
 
-    return keyword
+
+    temp = []
+    for word in keyword:
+        temp.append(word[0])
+
+    return "keywords: " + " | ".join(temp)
 
 
 def main():
@@ -69,7 +74,6 @@ def main():
     # subparser for the catalog command
     logging.debug("Constructing subparser")
     subparser.add_parser("catalog", help="fetch the keywords")
-
 
     arguments = parser.parse_args()
     # convert parsed arguments from Namespace to dictionary
