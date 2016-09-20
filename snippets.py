@@ -39,6 +39,15 @@ def get(name):
     return snippet[0]
 
 
+def catalog():
+    """Get a list of the keywords"""
+    with connection, connection.cursor() as cursor:
+        cursor.execute("select keyword from snippets ")
+        keyword = cursor.fetchall()
+
+    return keyword
+
+
 def main():
     '''Main Function'''
     logging.info("Constructing Parser")
@@ -57,6 +66,11 @@ def main():
     put_parser = subparser.add_parser("get", help="Store a snippet")
     put_parser.add_argument("name", help="Name of the snippet")
 
+    # subparser for the catalog command
+    logging.debug("Constructing subparser")
+    subparser.add_parser("catalog", help="fetch the keywords")
+
+
     arguments = parser.parse_args()
     # convert parsed arguments from Namespace to dictionary
 
@@ -65,6 +79,9 @@ def main():
 
     if command == 'put':
         name, snippet = put(**arguments)
+    elif command == 'catalog':
+        kword = catalog()
+        print(kword)
     elif command == 'get':
         snippet = get(**arguments)
         print("Retrieved snippet: {!r}".format(snippet))
